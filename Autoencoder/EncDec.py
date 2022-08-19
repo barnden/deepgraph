@@ -116,18 +116,26 @@ print(f"Test Loss: {test_loss:>8f}\n")
 ### Displaying or saving the results as well as the ground truth images for the first five images in the test set
 
 with torch.no_grad():
-    for i in range(10):
+    test_images = []
+    out_images = []
+
+    for i in range(5):
         x, _ = testset[i]
 
-        # (C, H, W) -> (H, W, C)
-        test_img = x.cpu().numpy()
-        test_img = np.moveaxis(test_img, [0, 2], [-1, -2])
+        test_img = x.cpu()
+        test_images.append(test_img)
 
-        plt.imsave(f"./EncDec/input_{i}.png", test_img)
+        # plt.imsave(f"./EncDec/input_{i}.png", test_img.permute(1, 2, 0).numpy())
 
         X = x.to(device)
         pred = net(X)
 
-        pred_img = pred.cpu().numpy()
-        pred_img = np.moveaxis(pred_img, [0, 2], [-1, -2])
-        plt.imsave(f"./EncDec/output_{i}.png", pred_img)
+        pred_img = pred.cpu()
+        out_images.append(pred.cpu())
+
+        # plt.imsave(f"./EncDec/output_{i}.png", pred_img.permute(1, 2, 0).numpy())
+
+    images = test_images + out_images
+
+    grid = torchvision.utils.make_grid(images, nrow=5).permute(1, 2, 0).numpy()
+    plt.imsave(f"./EncDec/result_grid.png", grid)
