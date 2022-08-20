@@ -131,7 +131,7 @@ with torch.no_grad():
         pred = net(X)
 
         pred_img = pred.cpu()
-        out_images.append(pred.cpu())
+        out_images.append(pred_img)
 
         # plt.imsave(f"./EncDec/output_{i}.png", pred_img.permute(1, 2, 0).numpy())
 
