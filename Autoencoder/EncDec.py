@@ -70,13 +70,13 @@ if True:
         break # All data in dataset should have same shape
 
 ### Define the loss and create your optimizer
-loss_fn = nn.BCELoss()
+loss_fn = nn.MSELoss()
 optimizer = optim.Adam(net.parameters())
 
 ### Main training loop
 size = len(trainloader.dataset)
 
-for epoch in range(6):
+for epoch in range(2):
     print('-' * 32)
     print(f"Epoch {epoch + 1}")
     print('-' * 32)
