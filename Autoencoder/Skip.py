@@ -16,8 +16,10 @@ class Net(nn.Module):
         self.encoder = nn.Sequential(
             nn.Conv2d(3, 4, 3, stride=2, padding=1),
             nn.ReLU(),
+
             nn.Conv2d(4, 8, 3, stride=2, padding=1),
             nn.ReLU(),
+
             nn.Conv2d(8, 16, 3, stride=2, padding=1),
             nn.ReLU()
         )
@@ -25,17 +27,11 @@ class Net(nn.Module):
         self.decoder = nn.Sequential(
             nn.ConvTranspose2d(16, 8, 4, stride=2, padding=1),
             nn.ReLU(),
-            nn.ConvTranspose2d(16, 8, 4, stride=2, padding=1),
+
+            nn.ConvTranspose2d(16, 4, 4, stride=2, padding=1),
             nn.ReLU(),
-            nn.Conv2d(8, 8, 4, stride=2, padding=1),
-            nn.ReLU(),
-            nn.ConvTranspose2d(8, 4, 4, stride=2, padding=1),
-            nn.ReLU(),
-            nn.ConvTranspose2d(8, 4, 4, stride=2, padding=1),
-            nn.ReLU(),
-            nn.Conv2d(4, 4, 4, stride=2, padding=1),
-            nn.ReLU(),
-            nn.ConvTranspose2d(4, 3, 4, stride=2, padding=1),
+
+            nn.ConvTranspose2d(8, 3, 4, stride=2, padding=1),
             nn.Sigmoid()
         )
 
@@ -62,7 +58,7 @@ class Net(nn.Module):
             self.encoder[1].register_forward_hook(save_activation_map_as('conv_1')),
             self.encoder[3].register_forward_hook(save_activation_map_as('conv_2')),
             self.decoder[1].register_forward_hook(concat_activation_with('conv_2')),
-            self.decoder[7].register_forward_hook(concat_activation_with('conv_1')),
+            self.decoder[3].register_forward_hook(concat_activation_with('conv_1')),
         ]
 
     def forward(self, x):
