@@ -7,6 +7,7 @@ import torch.nn as nn
 import numpy as np
 import matplotlib.pyplot as plt
 
+
 class Net(nn.Module):
     def __init__(self):
         super(Net, self).__init__()
@@ -23,7 +24,7 @@ class Net(nn.Module):
             nn.Conv2d(4, 8, 3, 2, padding=1),
             nn.ReLU(),
             nn.Conv2d(8, 16, 3, 2, padding=1),
-            nn.ReLU()
+            nn.ReLU(),
         )
 
         self.decoder = nn.Sequential(
@@ -32,13 +33,14 @@ class Net(nn.Module):
             nn.ConvTranspose2d(8, 4, 4, 2, padding=1),
             nn.ReLU(),
             nn.ConvTranspose2d(4, 3, 4, 2, padding=1),
-            nn.Sigmoid()
+            nn.Sigmoid(),
         )
 
     def forward(self, x):
         encode = self.encoder(x)
         decode = self.decoder(encode)
         return decode
+
 
 ### Create an instance of the Net class
 
@@ -54,10 +56,14 @@ print(net)
 # Converting the images for PILImage to tensor, so they can be accepted as the input to the network
 transform = transforms.ToTensor()
 
-trainset = torchvision.datasets.CIFAR10(root='./data', train=True, download=True, transform=transform)
+trainset = torchvision.datasets.CIFAR10(
+    root="./data", train=True, download=True, transform=transform
+)
 trainloader = torch.utils.data.DataLoader(trainset, batch_size=5, shuffle=True)
 
-testset = torchvision.datasets.CIFAR10(root='./data', train=False, download=True, transform=transform)
+testset = torchvision.datasets.CIFAR10(
+    root="./data", train=False, download=True, transform=transform
+)
 testloader = torch.utils.data.DataLoader(testset, batch_size=5, shuffle=False)
 
 if True:
@@ -67,7 +73,7 @@ if True:
         print(f"Shape of X [N, C, H, W]: {X.shape}")
         print(f"Shape of y: {y.shape} {y.dtype}")
 
-        break # All data in dataset should have same shape
+        break  # All data in dataset should have same shape
 
 ### Define the loss and create your optimizer
 loss_fn = nn.MSELoss()
@@ -77,9 +83,9 @@ optimizer = optim.Adam(net.parameters())
 size = len(trainloader.dataset)
 
 for epoch in range(2):
-    print('-' * 32)
+    print("-" * 32)
     print(f"Epoch {epoch + 1}")
-    print('-' * 32)
+    print("-" * 32)
 
     for batch, (X, _) in enumerate(trainloader):
         ## Getting the input and the target from the training set

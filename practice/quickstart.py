@@ -9,17 +9,11 @@ from torchvision.transforms import ToTensor
 
 # Retrieve training & test data
 fashion_train = datasets.FashionMNIST(
-    root="data",
-    train=True,
-    download=True,
-    transform=ToTensor()
+    root="data", train=True, download=True, transform=ToTensor()
 )
 
 fashion_test = datasets.FashionMNIST(
-    root="data",
-    train=False,
-    download=True,
-    transform=ToTensor()
+    root="data", train=False, download=True, transform=ToTensor()
 )
 
 batch_size = 64
@@ -35,7 +29,7 @@ if True:
         print(f"Shape of X [N, C, H, W]: {X.shape}")
         print(f"Shape of y: {y.shape} {y.dtype}")
 
-        break # All data in dataset should have same shape
+        break  # All data in dataset should have same shape
 
 ### 2. Creating Models
 
@@ -56,13 +50,14 @@ class NeuralNetwork(nn.Module):
             nn.ReLU(),
             nn.Linear(512, 512),
             nn.ReLU(),
-            nn.Linear(512, 10)
+            nn.Linear(512, 10),
         )
 
     def forward(self, x):
         x = self.flatten(x)
         logits = self.linear_relu_stack(x)
         return logits
+
 
 model = NeuralNetwork().to(device)
 print(model)
@@ -72,6 +67,7 @@ print(model)
 # In order to perform training, we need to define a loss function and an optimizer
 loss_fn = nn.CrossEntropyLoss()
 optimizer = torch.optim.SGD(model.parameters(), lr=1e-3)
+
 
 def train(dataloader: DataLoader, model: nn.Module, loss_fn, optimizer):
     size = len(dataloader.dataset)
@@ -93,6 +89,7 @@ def train(dataloader: DataLoader, model: nn.Module, loss_fn, optimizer):
             loss, current = loss.item(), batch * len(X)
             print(f"loss: {loss:>7f} [{current:>5d}/{size:>5d}]")
 
+
 def test(dataloader: DataLoader, model: nn.Module, loss_fn):
     size = len(dataloader.dataset)
     num_batches = len(dataloader)
@@ -109,14 +106,17 @@ def test(dataloader: DataLoader, model: nn.Module, loss_fn):
     test_loss /= num_batches
     correct /= size
 
-    print(f"Test Error: \n\tAccuracy: {100. * correct : >0.1f}%\n\tAvg. Loss: {test_loss : >8f}\n")
+    print(
+        f"Test Error: \n\tAccuracy: {100. * correct : >0.1f}%\n\tAvg. Loss: {test_loss : >8f}\n"
+    )
+
 
 epochs = 5
 
 for t in range(epochs):
-    print('-' * 32)
+    print("-" * 32)
     print(f"Epoch {t + 1}")
-    print('-' * 32)
+    print("-" * 32)
 
     train(train_loader, model, loss_fn, optimizer)
     test(train_loader, model, loss_fn)

@@ -1,5 +1,4 @@
 # Super-Resolution in RGB Space
-import sys
 import torch
 import torchvision
 import torchvision.transforms as transforms
@@ -8,10 +7,12 @@ import torch.nn as nn
 import torch.nn.functional as F
 import matplotlib.pyplot as plt
 
+
 class Net(nn.Module):
     def __init__(self, in_channels=3):
         super(Net, self).__init__()
 
+        # fmt: off
         self.encoder = nn.Sequential(
             nn.Conv2d(in_channels, 8, 3, stride=2, padding=1),
             nn.ReLU(),
@@ -37,8 +38,9 @@ class Net(nn.Module):
             nn.ReLU(),
 
             nn.ConvTranspose2d(16, in_channels, 4, stride=2, padding=1),
-            nn.Sigmoid()
+            nn.Sigmoid(),
         )
+        # fmt: on
 
         self.activation = {}
 
@@ -60,19 +62,19 @@ class Net(nn.Module):
             return hook
 
         self.hooks = [
-            self.encoder[1].register_forward_hook(save_activation_map_as('conv_1')),
-            self.encoder[3].register_forward_hook(save_activation_map_as('conv_2')),
-            self.encoder[5].register_forward_hook(save_activation_map_as('conv_3')),
-
-            self.decoder[1].register_forward_hook(concat_activation_with('conv_3')),
-            self.decoder[3].register_forward_hook(concat_activation_with('conv_2')),
-            self.decoder[5].register_forward_hook(concat_activation_with('conv_1')),
+            self.encoder[1].register_forward_hook(save_activation_map_as("conv_1")),
+            self.encoder[3].register_forward_hook(save_activation_map_as("conv_2")),
+            self.encoder[5].register_forward_hook(save_activation_map_as("conv_3")),
+            self.decoder[1].register_forward_hook(concat_activation_with("conv_3")),
+            self.decoder[3].register_forward_hook(concat_activation_with("conv_2")),
+            self.decoder[5].register_forward_hook(concat_activation_with("conv_1")),
         ]
 
     def forward(self, x):
         encode = self.encoder(x)
         decode = self.decoder(encode)
         return decode
+
 
 # Choose Nvidia GPU if available, CPU otherwise.
 device = "cuda" if torch.cuda.is_available() else "cpu"
@@ -83,10 +85,14 @@ print(net)
 
 transform = transforms.ToTensor()
 
-trainset = torchvision.datasets.STL10(root='./data', split='unlabeled', download=True, transform=transform)
+trainset = torchvision.datasets.STL10(
+    root="./data", split="unlabeled", download=True, transform=transform
+)
 trainloader = torch.utils.data.DataLoader(trainset, batch_size=5, shuffle=True)
 
-testset = torchvision.datasets.STL10(root='./data', split='test', download=True, transform=transform)
+testset = torchvision.datasets.STL10(
+    root="./data", split="test", download=True, transform=transform
+)
 testloader = torch.utils.data.DataLoader(testset, batch_size=5, shuffle=False)
 
 for X, y in testloader:
@@ -103,9 +109,9 @@ size = len(trainloader.dataset)
 # Set the below to False to skip training and use saved model "RGB_model.pth"
 if True:
     for epoch in range(5):
-        print('-' * 32)
+        print("-" * 32)
         print(f"Epoch {epoch + 1}")
-        print('-' * 32)
+        print("-" * 32)
 
         for batch, (X, _) in enumerate(trainloader, 1):
             y = X.to(device)
