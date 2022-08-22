@@ -163,7 +163,7 @@ with torch.no_grad():
         test_img = torch.squeeze(X)
         test_images.append(test_img)
 
-        plt.imsave(f"./SR/input_{i}.png", test_img.permute(1, 2, 0).numpy())
+        plt.imsave(f"./SR/RGB/input_{i}.png", test_img.permute(1, 2, 0).numpy())
 
         X = X.to(device)
         pred = net(X)
@@ -171,9 +171,9 @@ with torch.no_grad():
         pred_img = torch.squeeze(pred.cpu())
         out_images.append(pred_img)
 
-        plt.imsave(f"./SR/output_{i}.png", pred_img.permute(1, 2, 0).numpy())
+        plt.imsave(f"./SR/RGB/output_{i}.png", pred_img.permute(1, 2, 0).numpy())
 
     images = test_images + out_images + target_images
 
     grid = torchvision.utils.make_grid(images, nrow=5).permute(1, 2, 0).numpy()
-    plt.imsave(f"./SR/result_grid.png", grid)
+    plt.imsave(f"./SR/RGB/result_grid.png", grid)
